@@ -3,4 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="scan">Scan</string>
     <string name="stop">Stop</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="current_tank_level">Current Tank Level</string>
+    <string name="get_tank_level">Get tank Level</string>
 </resources>

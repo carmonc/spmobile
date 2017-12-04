@@ -83,6 +83,8 @@ public class BleNamesResolver {
 		mServices.put("00001814-0000-1000-8000-00805f9b34fb", "Running Speed and Cadence");
 		mServices.put("00001813-0000-1000-8000-00805f9b34fb", "Scan Parameters");
 		mServices.put("00001804-0000-1000-8000-00805f9b34fb", "Tx Power");
+		mServices.put("00001530-1212-efde-1523-785feabcd123", "UART/Nordic");
+		mServices.put("6e400001-b5a3-f393-e0a9-e50e24dcca9e", "UART Service");
 		
 		mCharacteristics.put("00002a43-0000-1000-8000-00805f9b34fb", "Alert Category ID");
 		mCharacteristics.put("00002a42-0000-1000-8000-00805f9b34fb", "Alert Category ID Bit Mask");
@@ -165,6 +167,8 @@ public class BleNamesResolver {
 		mCharacteristics.put("00002a0e-0000-1000-8000-00805f9b34fb", "Time Zone");
 		mCharacteristics.put("00002a07-0000-1000-8000-00805f9b34fb", "Tx Power Level");
 		mCharacteristics.put("00002a45-0000-1000-8000-00805f9b34fb", "Unread Alert Status");
+		mCharacteristics.put("6e400002-b5a3-f393-e0a9-e50e24dcca9e", "TX Characteristic");
+		mCharacteristics.put("6e400003-b5a3-f393-e0a9-e50e24dcca9e", "RX Characteristic");
 		
 		mValueFormats.put(Integer.valueOf(52), "32bit float");
 		mValueFormats.put(Integer.valueOf(50), "16bit float");
