@@ -6,4 +6,9 @@
     <string name="disconnect">Disconnect</string>
     <string name="current_tank_level">Current Tank Level</string>
     <string name="get_tank_level">Get tank Level</string>
+    <string name="send_json">Send JSON</string>
+    <string name="ip_address">IP Address</string>
+    <string name="home_ip_address">74.78.205.19</string>
+    <string name="read_from_ble">Read from BLE</string>
+    <string name="update">Update</string>
 </resources>
