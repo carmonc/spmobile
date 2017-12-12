@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -116,15 +118,19 @@ public class MainActivity extends AppCompatActivity {
                 //FIXME! I'm not going to remove this at this time but for future
                 //FIXME!  future use it is definately a good example on how to
                 //FIXME!  download HTML.
-//                new fetchHTML(new OnTaskFinished()
-//                {
-//                    @Override
-//                    public void onHtmlRetrieved(String feeds)
-//                    {
-//                        TextView content = (TextView) findViewById(R.id.textViewHtml);
-//                        content.setText(Html.fromHtml(feeds));
-//                    }
-//                }).execute(url);
+                url = "http://" + user_uri_entry + ":7100/report";
+                new fetchHTML(new OnTaskFinished()
+                {
+                    @Override
+                    public void onHtmlRetrieved(String feeds)
+                    {
+                        TextView content = (TextView) findViewById(R.id.textViewHtml);
+                        content.setVerticalScrollBarEnabled(true);
+                        content.setMaxLines(10);
+                        content.setMovementMethod(new ScrollingMovementMethod());
+                        content.setText(Html.fromHtml(feeds));
+                    }
+                }).execute(url);
 
                 // Execute DownloadImage AsyncTask
             }
@@ -297,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_Disconnect:
                 mBleWrapper.stopScanning();
-                mBleWrapper.diconnect();
+                mBleWrapper.disconnect();
                 break;
             default:
                 break;
@@ -310,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if(mBleWrapper.isBtEnabled() == false) {
+        if(!mBleWrapper.isBtEnabled()) {
             Intent enableBtIntent = new Intent((BluetoothAdapter.ACTION_REQUEST_ENABLE));
             startActivity(enableBtIntent);
             finish();
@@ -322,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mBleWrapper.diconnect();
+        mBleWrapper.disconnect();
         mBleWrapper.close();
     }
 

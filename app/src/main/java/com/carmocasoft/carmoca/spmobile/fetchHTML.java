@@ -13,7 +13,7 @@ import java.net.URLConnection;
  * Created by carl on 12/11/17.
  */
 
-@Deprecated
+
 class fetchHTML extends AsyncTask<String, Void, String>
 {
     String HTML_response= "";

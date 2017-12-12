@@ -125,7 +125,7 @@ public class BleWrapper {
     }  
     
     /* disconnect the device. It is still possible to reconnect to it later with this Gatt client */
-    public void diconnect() {
+    public void disconnect() {
     	if(mBluetoothGatt != null) mBluetoothGatt.disconnect();
     	 mUiCallback.uiDeviceDisconnected(mBluetoothGatt, mBluetoothDevice);
     }
