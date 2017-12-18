@@ -53,30 +53,33 @@ public class MainActivity extends AppCompatActivity {
     ImageView graph;
     ProgressDialog mProgressDialog;
 
+    private static final int GETVESSEL = 0;
+    int mState = 0;
+
     private static final UUID
-        UUID_ARDUINO_SERV   = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
-        UUID_ARDUINO_TX     = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e"),
-        UUID_ARDUINO_RX     = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e"),
+        UUID_ARDUINO_UART_SERV = UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e"),
+        UUID_ARDUINO_UART_TX = UUID.fromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e"),
+        UUID_ARDUINO_UART_RX = UUID.fromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e"),
 
-        UUID_NORDIC_SERV    = UUID.fromString("00001530-1212-efde-1523-785feabcd123"),
-        UUID_NORDIC_CHAR1   = UUID.fromString("00001531-1212-efde-1523-785feabcd123"),
-        UUID_NORDIC_CHAR2   = UUID.fromString("00001532-1212-efde-1523-785feabcd123"),
-        UUID_NORDIC_CHAR4   = UUID.fromString("00001534-1212-efde-1523-785feabcd123"),
+        UUID_NORDIC_UART_SERV   = UUID.fromString("00001530-1212-efde-1523-785feabcd123"),
+        UUID_NORDIC_UART_WRITE  = UUID.fromString("00001531-1212-efde-1523-785feabcd123"),
+        UUID_NORDIC_UART_WRITE_NR = UUID.fromString("00001532-1212-efde-1523-785feabcd123"),
+        UUID_NORDIC_UART_READ   = UUID.fromString("00001534-1212-efde-1523-785feabcd123"),
 
-        UUID_GENERIC_SERV   = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"),
-        UUID_GENERIC_CHAR0   = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"), /*returns name*/
-        UUID_GENERIC_CHAR1   = UUID.fromString("00002a01-0000-1000-8000-00805f9b34fb"),
-        UUID_GENERIC_CHAR4   = UUID.fromString("00002a04-0000-1000-8000-00805f9b34fb"),
+        UUID_GENERIC_ACCESS_SERV = UUID.fromString("00001800-0000-1000-8000-00805f9b34fb"),
+        UUID_GENERIC_DEVICE_NAME = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"), /*returns name*/
+        UUID_GENERIC_APPEARANCE  = UUID.fromString("00002a01-0000-1000-8000-00805f9b34fb"),
+        UUID_GENERIC_PERIPH_PREFERRED_CONN_PARAMS = UUID.fromString("00002a04-0000-1000-8000-00805f9b34fb"),
 
-        UUID_DEVI_SERV    = UUID.fromString("0000180a-0000-1000-8000-00805f9b34fb"),
-        UUID_DEVI_CHAR0   = UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb"), /* Adafruit Industries*/
-        UUID_DEVI_CHAR1   = UUID.fromString("00002a24-0000-1000-8000-00805f9b34fb"), /* BLESPIFRIEND */
-        UUID_DEVI_CHAR2   = UUID.fromString("00002a28-0000-1000-8000-00805f9b34fb"), /* 0.5.5 - Dec 13 2016 */
-        UUID_DEVI_CHAR3   = UUID.fromString("00002a26-0000-1000-8000-00805f9b34fb"), /* S110 8.0.0, 0.2 */
-        UUID_DEVI_CHAR4   = UUID.fromString("00002a27-0000-1000-8000-00805f9b34fb"), /* QFACA10 */
+        UUID_DEVI_DEVICE_INFO_SERVICE = UUID.fromString("0000180a-0000-1000-8000-00805f9b34fb"),
+        UUID_DEVI_MANUFACTURER_STRING = UUID.fromString("00002a29-0000-1000-8000-00805f9b34fb"), /* Adafruit Industries*/
+        UUID_DEVI_MODEL_NUM_STRING = UUID.fromString("00002a24-0000-1000-8000-00805f9b34fb"),  /* BLESPIFRIEND */
+        UUID_DEVI_SOFTWARE_REVISION = UUID.fromString("00002a28-0000-1000-8000-00805f9b34fb"), /* 0.5.5 - Dec 13 2016 */
+        UUID_DEVI_FIRMWARE_REVISION = UUID.fromString("00002a26-0000-1000-8000-00805f9b34fb"), /* S110 8.0.0, 0.2 */
+        UUID_DEVI_HARDWARE_REVISION = UUID.fromString("00002a27-0000-1000-8000-00805f9b34fb"), /* QFACA10 */
 
         UUID_GENATT_SERV    = UUID.fromString("00001801-0000-1000-8000-00805f9b34fb"),
-        UUID_GENATT_CHAR0   = UUID.fromString("00002a05-0000-1000-8000-00805f9b34fb");
+        UUID_GENATT_SERVICE_CHANGED = UUID.fromString("00002a05-0000-1000-8000-00805f9b34fb");
 
     private static final int
             CHARACTERISTIC_DISABLE = 0x00,
@@ -144,10 +147,11 @@ public class MainActivity extends AppCompatActivity {
 
                 gatt = mBleWrapper.getGatt();
 
-                //c = gatt.getService(UUID_ARDUINO_SERV).getCharacteristic(UUID_ARDUINO_TX);
-                c = gatt.getService(UUID_NORDIC_SERV).getCharacteristic(UUID_NORDIC_CHAR4);
-                //mBleWrapper.requestCharacteristicValue(c);
-                mBleWrapper.setNotificationForCharacteristic(c, true);
+                //This code enables the characteristic to be read!
+                // It doesn't actually GET the value!
+                //c = gatt.getService(UUID_ARDUINO_UART_SERV).getCharacteristic(UUID_ARDUINO_UART_RX);
+                c = gatt.getService(UUID_ARDUINO_UART_SERV).getCharacteristic(UUID_ARDUINO_UART_TX);
+                mBleWrapper.writeDataToCharacteristic(c, new byte[] {CHARACTERISTIC_ENABLE});
             }
         });
 
@@ -160,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 String url = "http://" + user_uri_entry + ":7100/submit";
 
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.forLanguageTag(Locale.getDefault().getDisplayLanguage()));
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.forLanguageTag(Locale.getDefault().getDisplayLanguage()));
                 long msTime = System.currentTimeMillis();
                 Date curDateTime = new Date(msTime);
                 datetime = sdf.format(curDateTime);
@@ -202,15 +206,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
+        /**
+         * Bluetooth Wrapper
+         */
         mBleWrapper = new BleWrapper(this,new BleWrapperUiCallbacks.Null() {
             @Override
             public void uiDeviceFound(final BluetoothDevice device,
@@ -269,6 +267,58 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("DEBUG", "Val: " + b);
                 }
             }
+
+            @Override
+            public void uiSuccessfulWrite(final BluetoothGatt gatt,
+                                          final BluetoothDevice device,
+                                          final BluetoothGattService service,
+                                          final BluetoothGattCharacteristic ch,
+                                          final String description) {
+                Log.d("DEBUG","uiSuccessfulWrite: Successful write operation");
+                BluetoothGattCharacteristic c;
+
+                super.uiSuccessfulWrite(gatt,device,service,ch,description);
+
+                switch(mState) {
+                    case GETVESSEL:
+
+                        c = gatt.getService(UUID_ARDUINO_UART_SERV).getCharacteristic(UUID_ARDUINO_UART_TX);
+                        //mBleWrapper.requestCharacteristicValue(c);
+                        mBleWrapper.setNotificationForCharacteristic(c, true);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void uiFailedWrite(final BluetoothGatt gatt,
+                                          final BluetoothDevice device,
+                                          final BluetoothGattService service,
+                                          final BluetoothGattCharacteristic ch,
+                                          final String description) {
+                Log.d("DEBUG","uiFailedWrite: Unsuccessful write operation");
+                BluetoothGattCharacteristic c;
+
+                super.uiFailedWrite(gatt,device,service,ch,description);
+
+                switch(mState) {
+                    case GETVESSEL:
+
+                        //This code enables the characteristic to be read!
+                        // It doesn't actually GET the value!
+                        c = gatt.getService(UUID_ARDUINO_UART_SERV).getCharacteristic(UUID_ARDUINO_UART_TX);
+                        mBleWrapper.writeDataToCharacteristic(c, new byte[] {CHARACTERISTIC_ENABLE});
+                        break;
+                }
+            }
+
+            public void uiGotNotification(final BluetoothGatt gatt,
+                                          final BluetoothDevice device,
+                                          final BluetoothGattService service,
+                                          final BluetoothGattCharacteristic characteristic) {
+                Log.d("DEBUG", "uiGotNotification");
+            }
+
 
         } ) ;
 
@@ -332,16 +382,16 @@ public class MainActivity extends AppCompatActivity {
         mBleWrapper.close();
     }
 
-    public void getTankLevelFromBLE(View v) {
-        BluetoothGatt gatt;
-        BluetoothGattCharacteristic c;
-
-        gatt = mBleWrapper.getGatt();
-
-        c = gatt.getService(UUID_ARDUINO_SERV).getCharacteristic(UUID_ARDUINO_RX);
-        mBleWrapper.requestCharacteristicValue(c);
-
-    }
+//    public void getTankLevelFromBLE(View v) {
+//        BluetoothGatt gatt;
+//        BluetoothGattCharacteristic c;
+//
+//        gatt = mBleWrapper.getGatt();
+//
+//        c = gatt.getService(UUID_ARDUINO_UART_SERV).getCharacteristic(UUID_ARDUINO_UART_RX);
+//        mBleWrapper.requestCharacteristicValue(c);
+//
+//    }
 
     // DownloadImage AsyncTask
     private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
